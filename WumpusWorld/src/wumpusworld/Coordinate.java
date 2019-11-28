@@ -13,33 +13,25 @@ import java.util.Objects;
  *
  * @author albam
  */
-public class Node {
+public class Coordinate {
     //ATRIBUTES
     private int x;
     private int y;
     private boolean [] percepts;
-    private int numVisit;
+    private boolean isVisited;
     private int levelDanger;
-    private int gValue; //g(n)
-    private int fValue; //f(n)
-    private ArrayList<Node> adjacentNodes;
+    private  ArrayList<Coordinate> adjacentNodes;
     
    //CONSTRUCTOR
-   public Node(int x, int y){
+   public Coordinate(int x, int y){
        this.x = x;
        this.y = y;
        this.percepts = new boolean[5];
-       this.levelDanger = 0;
-       this.numVisit = 0;
-       //this.levelDanger = 1;
+       this.levelDanger = 1;
+       this.adjacentNodes = new ArrayList<>();
    }
    
-    public int  getX(){return x;}
-    public int  getY(){return y;}
    
-    public int  getNumVisit(){return numVisit;}
-    public void setNumVisit(int numVisit){this.numVisit = numVisit;}
-    
    public void setPerceptStench(boolean isStench){
        this.percepts[0] = isStench;
    }
@@ -60,38 +52,40 @@ public class Node {
        this.percepts[4] = isScream;
    }
    
-//   public void setLevelDanger (int i){
-//       this.levelDanger = i;
-//   }
-//   
-//   public int getLevelDanger(){
-//       return levelDanger;
-//   }
+   public void setLevelDanger (int i){
+       this.levelDanger = i;
+   }
    
-   public ArrayList<Node> getAdjacentNodes(){
+   public int getLevelDanger(){
+       return levelDanger;
+   }
+   
+   public ArrayList<Coordinate> getAdjacentNodes(){
        return adjacentNodes;
    }
-
- public boolean  getPerceptStench(){
-      return  this.percepts[0];
-   }
    
- public boolean  getPerceptBreeze(){
-      return  this.percepts[1];
-   }
-   
-   
-    public void setGValue(int gValue){this.gValue = gValue;}
-    public int getGValue(){return  gValue;}
-    public void setFValue(int fValue){this.fValue = fValue;}
-    public int getFValue(){return  fValue;}
-    public int getLevelDanger(){return levelDanger;}
-    public void setLevelDanger(int levelDanger){this.levelDanger = levelDanger;}
-
-   
-   
-   private void addAdjacentNode(Node node)
+   public void createAdjacentNodes() //4x4
    {
+       Coordinate adj;
+       if (x - 1 > 0){ // there is left
+           adj = new Coordinate (x - 1,y);
+           addAdjacentNode(adj);
+       }
+       if (x + 1 < 5){ // there is right
+           adj = new Coordinate (x + 1,y );
+           addAdjacentNode(adj);
+       }
+       if (y - 1 > 0){ // there is bottom
+           adj = new Coordinate (x, y - 1);
+           addAdjacentNode(adj);
+       }
+        if(y + 1 < 5){ //there is upper
+            adj = new Coordinate (x, y + 1);
+            addAdjacentNode(adj);
+        }
+   }
+   
+   private void addAdjacentNode(Coordinate node){
        if (!adjacentNodes.contains(node))
                adjacentNodes.add(node);
    }
@@ -99,8 +93,7 @@ public class Node {
 
 
     @Override
-    public boolean equals(Object obj) 
-    {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -110,26 +103,25 @@ public class Node {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Node other = (Node) obj;
+        final Coordinate other = (Coordinate) obj;
         if (this.x != other.x) {
             return false;
         }
         if (this.y != other.y) {
             return false;
         }
-        if (this.numVisit != other.numVisit) {
+        if (this.isVisited != other.isVisited) {
+            return false;
+        }
+        if (this.levelDanger != other.levelDanger) {
             return false;
         }
         if (!Arrays.equals(this.percepts, other.percepts)) {
             return false;
         }
-        if (!Objects.equals(this.adjacentNodes, other.adjacentNodes)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.adjacentNodes, other.adjacentNodes);
     }
-   
-   
+  
 
     
     
